@@ -1,5 +1,4 @@
 flask
-pandas
 werkzeug
-gunicorn
-prometheus_flask_exporter
+prometheus-flask-exporter
+pandas

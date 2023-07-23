@@ -1,25 +1,34 @@
+import os
+import logging
 from flask import Flask, request, redirect, send_from_directory
 from werkzeug.utils import secure_filename
 from prometheus_flask_exporter import PrometheusMetrics
-import pandas as pd  # Import pandas
-import os
-import logging
+import pandas as pd
 
-app = Flask(__name__)
-
-UPLOAD_FOLDER = '/Users/morradbattah/Documents/GitHub/File-Manipulation/Uploads'
+# Constants
+APP_DIR = os.path.dirname(os.path.abspath(__file__))
+UPLOAD_FOLDER = os.path.join(APP_DIR, 'uploads')
+DOWNLOAD_FOLDER = os.path.join(APP_DIR, 'downloads')
 ALLOWED_EXTENSIONS = {'csv'}
 
+# Ensure upload and download directories exist
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+os.makedirs(DOWNLOAD_FOLDER, exist_ok=True)
+
+# App configuration
+app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+app.config['DOWNLOAD_FOLDER'] = DOWNLOAD_FOLDER
 
 # Initialize the metrics after the Flask app has been configured
 metrics = PrometheusMetrics(app)
 
 logging.basicConfig(filename='app.log', level=logging.INFO)
 
+
 def allowed_file(filename):
-    return '.' in filename and \
-           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
 
 @app.route('/', methods=['GET', 'POST'])
 def upload_file():
@@ -48,6 +57,7 @@ def upload_file():
     </form>
     '''
 
+
 def csv_to_txt(filepath):
     try:
         df = pd.read_csv(filepath)  # Use pandas to read the CSV
@@ -57,9 +67,11 @@ def csv_to_txt(filepath):
     except Exception as e:
         logging.error('Failed to convert file: ' + str(e))
 
+
 @app.route('/downloads/<filename>')
 def download_file(filename):
-    return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
+    return send_from_directory(app.config['DOWNLOAD_FOLDER'], filename)
+
 
 if __name__ == "__main__":
     app.run(port=5000)
