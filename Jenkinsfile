@@ -4,15 +4,29 @@ pipeline {
     stages {
         stage('Install dependencies') {
             steps {
-                sh 'python3 -m venv venv'
-                sh 'source venv/bin/activate'
-                sh 'venv/bin/python3 -m pip install -r requirements.txt'
+                script {
+                    sh '''
+                        python3 -m venv venv
+                        source venv/bin/activate
+                        venv/bin/python3 -m pip install -r requirements.txt
+                    '''
+                }
             }
         }
 
         stage('Run Tests') {
             steps {
-                sh 'source venv/bin/activate && python -m unittest test_app.py'
+                script {
+                    sh '''
+                        source venv/bin/activate 
+                        python -m unittest test_app.py
+                    '''
+                }
+            }
+            post {
+                always {
+                    junit '**/test-results.xml'
+                }
             }
         }
 
@@ -20,6 +34,13 @@ pipeline {
             steps {
                 sh 'nohup venv/bin/gunicorn --bind 0.0.0.0:5000 app:app &'
             }
+        }
+    }
+    
+    post {
+        always {
+            archiveArtifacts artifacts: 'app.log', fingerprint: true
+            cleanWs()
         }
     }
 }

@@ -1,10 +1,10 @@
 import unittest
-import app
+from app import app
 
 class FlaskTestCase(unittest.TestCase):
 
     def setUp(self):
-        self.app = app.app.test_client()
+        self.app = app.test_client()
 
     def test_index(self):
         response = self.app.get('/')
