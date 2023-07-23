@@ -2,13 +2,19 @@ pipeline {
     agent any
 
     stages {
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+        
         stage('Install dependencies') {
             steps {
                 script {
                     sh '''
-                        python3 -m venv venv
-                        source venv/bin/activate
-                        venv/bin/python3 -m pip install -r requirements.txt
+                    python3 -m venv venv
+                    source venv/bin/activate
+                    venv/bin/python3 -m pip install -r requirements.txt
                     '''
                 }
             }
@@ -18,28 +24,27 @@ pipeline {
             steps {
                 script {
                     sh '''
-                        source venv/bin/activate 
-                        python -m unittest test_app.py
+                    source venv/bin/activate
+                    python -m unittest test_app.py
                     '''
                 }
             }
             post {
                 always {
-                    junit '**/test-results.xml'
+                    junit '**/test-reports/*.xml'
                 }
             }
         }
 
         stage('Deploy') {
             steps {
-                sh 'nohup venv/bin/gunicorn --bind 0.0.0.0:5000 app:app &'
+                echo 'Deploying....'
             }
         }
     }
-    
+
     post {
         always {
-            archiveArtifacts artifacts: 'app.log', fingerprint: true
             cleanWs()
         }
     }

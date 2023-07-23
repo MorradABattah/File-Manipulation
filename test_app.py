@@ -1,4 +1,5 @@
 import unittest
+import xmlrunner
 from app import app
 
 class FlaskTestCase(unittest.TestCase):
@@ -11,4 +12,8 @@ class FlaskTestCase(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
 
 if __name__ == '__main__':
-    unittest.main()
+    with open('test-reports/results.xml', 'wb') as output:
+        unittest.main(
+            testRunner=xmlrunner.XMLTestRunner(output=output),
+            failfast=False, buffer=False, catchbreak=False
+        )
