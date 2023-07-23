@@ -3,4 +3,3 @@ werkzeug
 prometheus-flask-exporter
 pandas
 unittest-xml-reporting
-xmlrunner
