@@ -6,7 +6,7 @@ import logging
 
 app = Flask(__name__)
 
-UPLOAD_FOLDER = '/path/to/upload/directory'
+UPLOAD_FOLDER = '/Users/morradbattah/Documents/GitHub/File-Manipulation/Uploads'
 ALLOWED_EXTENSIONS = {'csv'}
 
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
