@@ -6,7 +6,7 @@ pipeline {
             steps {
                 sh 'python3 -m venv venv'
                 sh 'source venv/bin/activate'
-                sh 'pip install -r requirements.txt'
+                sh 'venv/bin/python3 -m pip install -r requirements.txt'
             }
         }
 
@@ -18,7 +18,7 @@ pipeline {
 
         stage('Deploy') {
             steps {
-                sh 'nohup gunicorn --bind 0.0.0.0:5000 app:app &'
+                sh 'nohup venv/bin/gunicorn --bind 0.0.0.0:5000 app:app &'
             }
         }
     }
