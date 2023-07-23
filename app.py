@@ -1,7 +1,7 @@
 from flask import Flask, request, redirect, send_from_directory
 from werkzeug.utils import secure_filename
 from prometheus_flask_exporter import PrometheusMetrics
-import pandas as pd
+import pandas as pd  # Import pandas
 import os
 import logging
 
@@ -50,9 +50,9 @@ def upload_file():
 
 def csv_to_txt(filepath):
     try:
-        df = pd.read_csv(filepath)
+        df = pd.read_csv(filepath)  # Use pandas to read the CSV
         txt_filename = filepath.rsplit('.', 1)[0] + '.txt'
-        df.to_csv(txt_filename, sep='\t', index=False)
+        df.to_csv(txt_filename, sep='\t', index=False)  # Use pandas to write the TXT
         logging.info('File converted to txt')
     except Exception as e:
         logging.error('Failed to convert file: ' + str(e))
