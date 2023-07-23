@@ -2,3 +2,4 @@ flask
 pandas
 werkzeug
 gunicorn
+prometheus_flask_exporter
